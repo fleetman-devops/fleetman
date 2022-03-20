@@ -1,7 +1,5 @@
 FROM tomcat:8.5.16-jre8
 
-MAINTAINER Richard Chesterwood "contact@virtualpairprogrammers.com"
-
 RUN rm -rf ./webapps/*
 
 EXPOSE 8080
