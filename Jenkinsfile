@@ -19,7 +19,7 @@ pipeline {
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dashashutosh80/fleetman-webapp']]])
          }
       }
-      stage('BUILD'){
+      stage('Build'){
             steps {
                 sh 'mvn clean install -DskipTests'
             }
@@ -34,7 +34,7 @@ pipeline {
       stage('Building image') {
          steps{
             script {
-               dockerImage = docker.build registry + ":latest"
+               dockerImage = docker.build registry + ":${env.BUILD_NUMBER}"
             }
          }
       }
@@ -42,13 +42,13 @@ pipeline {
       stage('Pushing to ECR') {
          steps{  
                script {
-                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:latest"
+                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${env.BUILD_NUMBER}"
                }
          }
       }
       stage('Remove Unused docker image') {
           steps{
-            sh "docker rmi $registry:latest"
+            sh "docker rmi $registry:${env.BUILD_NUMBER}"
           }
       }
    }
