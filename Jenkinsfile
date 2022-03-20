@@ -13,6 +13,7 @@ pipeline {
       }
       stage('Archive') {
          steps{
+            echo "Archiving data in S3"
             archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
          }
       }
