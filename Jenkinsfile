@@ -34,22 +34,17 @@ pipeline {
       stage('Building image') {
          steps{
             script {
-               dockerImage = docker.build registry + ":${env.BUILD_NUMBER}"
+               dockerImage = docker.build registry + ":latest"
             }
          }
       }
       // Uploading Docker images into AWS ECR
-      stage('Pushing to ECR') {
+      stage('Deploy to ECR') {
          steps{  
                script {
-                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${env.BUILD_NUMBER}"
+                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:latest"
                }
          }
-      }
-      stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registry:${env.BUILD_NUMBER}"
-          }
       }
    }
 }
