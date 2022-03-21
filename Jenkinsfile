@@ -10,13 +10,13 @@ pipeline {
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
    }
    stages {
-      stage('Log in to AWS ECR') {
-         steps {
-            script {
-               sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-            }
-         }
-      }
+      // stage('Log in to AWS ECR') {
+      //    steps {
+      //       script {
+      //          sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+      //       }
+      //    }
+      // }
       stage('Checkout') { 
          steps{
             checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dashashutosh80/fleetman-webapp']]])
@@ -55,7 +55,7 @@ pipeline {
          steps {
             script {
             // This step should not normally be used in your script. Consult the inline help for details.
-               withDockerRegistry(credentialsId: 'ecr:us-east-1:aws_credentials', url: '542591410366.dkr.ecr.us-east-1.amazonaws.com/fleetman') {
+               withDockerRegistry(credentialsId: 'ecr:us-east-1:aws_credentials', url: 'https://542591410366.dkr.ecr.us-east-1.amazonaws.com/fleetman') {
                   dockerImage.push("latest")
                }
             }
