@@ -1,5 +1,8 @@
 pipeline {
    agent any
+   // tools {
+   //  maven 'maven-3.6.3'
+   // }
    environment {
         AWS_ACCOUNT_ID="542591410366"
         AWS_DEFAULT_REGION="us-east-1" 
@@ -23,6 +26,7 @@ pipeline {
             steps {
                 sh 'mvn clean install -DskipTests'
             }
+            // Post Successful Build Steps
             post {
                 success {
                     echo 'Now Archiving...'
@@ -30,20 +34,38 @@ pipeline {
                 }
             }
       }
-      // Building Docker images
+      // Building Docker Images
       stage('Building image') {
          steps{
             script {
                dockerImage = docker.build registry + ":latest"
+               //dockerImage = docker.build registry + "${env.BUILD_NUMBER}"
             }
          }
       }
-      // Uploading Docker images into AWS ECR
+      // Uploading Docker Images into AWS ECR
+      // stage('Deploy to ECR') {
+      //    steps{  
+      //          script {
+      //                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:latest"
+      //          }
+      //    }
+      // }
       stage('Deploy to ECR') {
-         steps{  
-               script {
-                     sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:latest"
+         steps {
+            script {
+            // This step should not normally be used in your script. Consult the inline help for details.
+               withDockerRegistry(credentialsId: 'ecr:us-east-1:aws_credentials', url: '542591410366.dkr.ecr.us-east-1.amazonaws.com/fleetman') {
+                  dockerImage.push("latest")
                }
+            }
+         }
+      }
+      stage('Remove local images') {
+         steps {
+            script {
+                sh "docker rmi -f ${registry}:latest"
+            }
          }
       }
    }
