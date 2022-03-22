@@ -44,14 +44,14 @@ pipeline {
          }
       }
       // Uploading Docker Images into AWS ECR
-      // stage('Deploy to ECR') {
+      // stage('Deploy to ECR: Type 1') {
       //    steps{  
       //          script {
       //                sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:latest"
       //          }
       //    }
       // }
-      stage('Deploy to ECR') {
+      stage('Deploy to ECR: Type 2') {
          steps {
             script {
             // This step should not normally be used in your script. Consult the inline help for details.
@@ -61,6 +61,7 @@ pipeline {
             }
          }
       }
+      //This step removes old images from the instance where Docker images are being built.
       stage('Remove local images') {
          steps {
             script {
