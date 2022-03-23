@@ -55,7 +55,7 @@ pipeline {
          steps {
             script {
             // This step should not normally be used in your script. Consult the inline help for details.
-               withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: '542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
+               withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: 'https://542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
                   dockerImage.push("latest")
                }
             }
