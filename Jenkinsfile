@@ -5,7 +5,7 @@ pipeline {
    // }
    environment {
         AWS_ACCOUNT_ID="542591410366"
-        AWS_DEFAULT_REGION="us-east-1" 
+        AWS_DEFAULT_REGION="us-west-2" 
         IMAGE_REPO_NAME="fleetman"
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
    }
@@ -19,7 +19,7 @@ pipeline {
       // }
       stage('Checkout') { 
          steps{
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dashashutosh80/fleetman-webapp']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/fleetman-devops/fleetman']]])
          }
       }
       stage('Build'){
@@ -55,7 +55,7 @@ pipeline {
          steps {
             script {
             // This step should not normally be used in your script. Consult the inline help for details.
-               withDockerRegistry(credentialsId: 'ecr:us-east-1:aws_credentials', url: 'https://542591410366.dkr.ecr.us-east-1.amazonaws.com/fleetman') {
+               withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: '542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
                   dockerImage.push("latest")
                }
             }
