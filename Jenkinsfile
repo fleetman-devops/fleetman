@@ -90,6 +90,7 @@ pipeline {
                   curl https://ptsv2.com/t/pmmth-1648089958/post -X POST -H "content-type: application/json" -d '{"parameters": {"image":"542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:${env.BUILD_NUMBER}"}}'
                   '''
             }
+         }
       }
       //This step removes old images from the instance where Docker images are being built.
       stage('Remove local images') {
