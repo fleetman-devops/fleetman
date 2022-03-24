@@ -57,11 +57,9 @@ pipeline {
       }
       stage('Upload manifest to S3'){
          steps{
-            withAWS(region:'us-west-2',credentials:'aws_credentials') {
-                  sh 'echo "Uploading manifests to S3"'
-                  s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'jenkins-manifests', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-west-2', showDirectlyInBrowser: false, sourceFile: '*.yaml', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'fleetman', userMetadata: []
+               sh 'echo "Uploading manifests to S3"'
+               s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'jenkins-manifests', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-west-2', showDirectlyInBrowser: false, sourceFile: '*.yaml', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'fleetman', userMetadata: []
             }
-         }
       }
       // Uploading Docker Images into AWS ECR
       // stage('Deploy to ECR: Type 1') {
