@@ -61,23 +61,23 @@ pipeline {
             }
       }
       //Uploading Docker Images into AWS ECR
-      stage('Deploy to ECR') {
-         steps{
-               script {
-                  sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${env.BUILD_NUMBER}"
-               }
-         }
-      }
-      // stage('Deploy Image to ECR: Type 2') {
-      //    steps {
-      //       script {
-      //       // This step should not normally be used in your script. Consult the inline help for details.
-      //          withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: 'https://542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
-      //             dockerImage.push("${env.BUILD_NUMBER}")
+      // stage('Deploy to ECR') {
+      //    steps{
+      //          script {
+      //             sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${env.BUILD_NUMBER}"
       //          }
-      //       }
       //    }
       // }
+      stage('Deploy Image to ECR') {
+         steps {
+            script {
+            // This step should not normally be used in your script. Consult the inline help for details.
+               withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: 'https://542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
+                  dockerImage.push("${env.BUILD_NUMBER}")
+               }
+            }
+         }
+      }
       stage('Trigger spinnaker webhook'){
          steps {
             script {
