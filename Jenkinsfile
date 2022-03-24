@@ -81,12 +81,11 @@ pipeline {
       stage('Trigger spinnaker webhook'){
          steps {
             script {
-               sh '''
+               sh """
                   #!/bin/bash
                   echo "Triggering Spinnaker"
-                  echo '{"parameters": {"image":"542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:${env.BUILD_NUMBER}"}}'
                   curl https://ptsv2.com/t/pmmth-1648089958/post -X POST -H "content-type: application/json" -d '{"parameters": {"image":"542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:${env.BUILD_NUMBER}"}}'
-                  '''
+                  """
             }
          } 
       }
@@ -94,7 +93,7 @@ pipeline {
       stage('Remove local images') {
          steps {
             script {
-                sh "docker rmi -f ${registry}:latest"
+                sh "docker rmi -f ${registry}:${env.BUILD_NUMBER}"
             }
          }
       }
