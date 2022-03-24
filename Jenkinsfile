@@ -59,7 +59,7 @@ pipeline {
          steps{
             withAWS(region:'us-west-2',credentials:'aws_credentials') {
                   sh 'echo "Uploading manifests to S3"'
-                      s3Upload(sourceFile:'*.yaml', bucket:'jenkins-manifests')
+                      s3Upload(entries:[{sourceFile:'*.yaml', bucket:'jenkins-manifests'}])
             }
          }
       }
