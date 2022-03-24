@@ -38,9 +38,28 @@ pipeline {
       stage('Building image') {
          steps{
             script {
-               dockerImage = docker.build registry + ":latest" 
+               dockerImage = docker.build registry + "${env.BUILD_NUMBER}" 
                //dockerImage = docker.build registry + "${env.BUILD_NUMBER}"
             }
+         }
+      }
+      stage('Parameterize Manifest') {
+         steps{
+            script {
+               sh '''
+                     #!/bin/bash
+                     cat deploy.yml | grep image
+                     sed -i 's|image: .*|image: "${ parameters.image }"|' deploy.yml
+                     cat deploy.yml | grep image
+                  '''
+            }
+         }
+      }
+      stage('Upload manifest to S3'){
+         steps{
+            withAWS(region:'us-west-2',credentials:'aws_credentials') {
+                  sh 'echo "Uploading manifests to S3"'
+                      s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'*.yaml', bucket:'jenkins-manifests')
          }
       }
       // Uploading Docker Images into AWS ECR
@@ -51,15 +70,26 @@ pipeline {
       //          }
       //    }
       // }
-      stage('Deploy to ECR: Type 2') {
+      stage('Deploy Image to ECR: Type 2') {
          steps {
             script {
             // This step should not normally be used in your script. Consult the inline help for details.
                withDockerRegistry(credentialsId: 'ecr:us-west-2:aws_credentials', url: 'https://542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman') {
-                  dockerImage.push("latest")
+                  dockerImage.push("${env.BUILD_NUMBER}")
                }
             }
          }
+      }
+      stage('Trigger spinnaker webhook'){
+         steps {
+            script {
+               sh '''
+                  #!/bin/bash
+                  echo "Triggering Spinnaker"
+                  echo '{"parameters": {"image":"542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:${env.BUILD_NUMBER}"}}'
+                  curl https://ptsv2.com/t/pmmth-1648089958/post -X POST -H "content-type: application/json" -d '{"parameters": {"image":"542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:${env.BUILD_NUMBER}"}}'
+                  '''
+            }
       }
       //This step removes old images from the instance where Docker images are being built.
       stage('Remove local images') {

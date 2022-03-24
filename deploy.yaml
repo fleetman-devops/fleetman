@@ -192,6 +192,6 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: 542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman:latest
+        image: 542591410366.dkr.ecr.us-west-2.amazonaws.com/fleetman
         ports:
         - containerPort: 80
