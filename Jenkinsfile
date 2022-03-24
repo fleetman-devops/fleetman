@@ -48,9 +48,9 @@ pipeline {
             script {
                sh '''
                      #!/bin/bash
-                     cat deploy.yml | grep image
-                     sed -i 's|image: .*|image: "${ parameters.image }"|' deploy.yml
-                     cat deploy.yml | grep image
+                     cat deploy.yaml | grep image
+                     sed -i 's|image: .*|image: "${ parameters.image }"|' deploy.yaml
+                     cat deploy.yaml | grep image
                   '''
             }
          }
